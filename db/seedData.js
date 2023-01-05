@@ -2,6 +2,7 @@ const client = require("./client");
 const { createUser } = require('./users');
 const { createProduct } = require('./products');
 
+
 async function dropTables() {
   
     // drop all tables, in the correct order
@@ -48,12 +49,15 @@ async function dropTables() {
         category TEXT NOT NULL,
         price varchar (255) NOT NULL,
         imageUrl varchar (255) NOT NULL
+        price varchar (255) NOT NULL
       );
         CREATE TABLE cartitem (
         id SERIAL PRIMARY KEY,
         "productId" INTEGER REFERENCES products(id),
         "productName" varchar(255) REFERENCES products(name),
         "productDescription" varchar(255) REFERENCES products(description),
+        "productDescription" varchar(255) REFERENCES products(desc
+            ription),
         "productPrice" varchar(255 REFERENCES products(price)
       );
     `)
@@ -65,7 +69,7 @@ async function dropTables() {
   }
   
   }
-
+  
   async function createInitialUsers() {
     console.log("Starting to create users...")
     try {
@@ -152,6 +156,5 @@ async function dropTables() {
       throw error
     }
   }
-  
 
 
