@@ -1,4 +1,4 @@
-const client = "./client.js"
+const client = require("./client.js")
 
 async function getAllProducts(){
 try {
@@ -12,22 +12,20 @@ try {
   }
 }
 
-async function createProduct({brand, description, category, price, img}) {
-  
+async function createProduct( { brand, description, category, price, imageUrl } ) {
+ 
     try {
-      const { rows: [routine] } = await client.query(
-        `
-          INSERT INTO products (brand, description, category, price, img)
+      const { rows } = await client.query(`
+          INSERT INTO products(brand, description, category, price, "imageUrl")
           VALUES ($1, $2, $3, $4, $5)
-          ON CONFLICT (brand) DO NOTHING
           RETURNING *;
-        `, 
-        [brand, description, category, price, img]);
-  
-      return routine;
+        `, [brand, description, category, price, imageUrl]);
+       
+        
+      return rows;
   
     } catch (error) {
-      console.log("Could not create product in DB");
+      console.log(error);
       return;
     }
     
