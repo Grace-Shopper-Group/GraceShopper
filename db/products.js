@@ -1,6 +1,6 @@
 const client = "./client.js"
 
-const getAllProducts = async() => { 
+async function getAllProducts(){
 try {
     const { rows } = await client.query(`
     SELECT * FROM products
@@ -32,3 +32,29 @@ async function createProduct({id, name, description, category, price}) {
     }
     
   }
+
+  async function updateProduct({id, ...fields}){
+    const setString = Object.keys(fields).map(
+        (key, index) => `"${ key }"=$${ index + 1 }`
+      ).join(', ');
+    
+      if (setString.length === 0) {
+        return;
+      }
+    
+      try {
+        const { rows: [ product ] } = await client.query(`
+          UPDATE products
+          SET ${ setString }
+          WHERE id=${ id }
+          RETURNING *;
+        `, Object.values(fields));
+    
+        return product;
+      } catch (error) {
+        return {
+          error: "Error updating product!"
+        }
+      }
+    }
+  
