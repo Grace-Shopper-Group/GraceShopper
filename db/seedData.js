@@ -179,14 +179,54 @@ async function dropTables() {
       throw error
     }
   }
+
+  async function testDB() {
+    try {
+        console.log("Starting to TEST database...")
+
+        console.log("Calling getUser")
+        const user = await getUser("albert", "bertie99");
+        console.log("Testing result getUser:", user);
+
+        console.log("Calling getUserById with id 1");
+        const userById = await getUserById(1);
+        console.log("Testing Result getUserById", userById)
+
+        console.log("Calling getUserByUsername")
+        const userByUsername = await getUserByUsername("albert");
+        console.log("Testing result getUserByUsername", userByUsername);
+
+        console.log("Calling getAllProducts");
+        const allProducts = await getAllProducts();
+        console.log ("Testing Result getAllProducts:", allProducts);
+
+        console.log("Calling getProductById 1");
+        const productById = await getProductById(1);
+        console.log("Testing Result getProductById 1", productById)
+
+        console.log("Calling updateProduct on product[1], only updating price");
+        const updatedProduct = await updateProduct(1, {price: 64.99});
+        console.log("Testing Result updateProduct", updatedProduct);
+
+
+        console.log("Finished database tests!")
+    }
+    catch (error){
+        console.log("Error testing database")
+        throw error;
+    }
+}
+
+
+
+
   
   module.exports = {
     rebuildDB,
+    testDB,
     dropTables,
     createTables,
   }
-  
-
 
 
 
