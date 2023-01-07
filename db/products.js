@@ -12,17 +12,17 @@ try {
   }
 }
 
-async function createProduct({id, brand, description, category, price}) {
+async function createProduct({brand, description, category, price, img}) {
   
     try {
       const { rows: [routine] } = await client.query(
         `
-          INSERT INTO products (id, brand, description, category, price)
+          INSERT INTO products (brand, description, category, price, img)
           VALUES ($1, $2, $3, $4, $5)
           ON CONFLICT (name) DO NOTHING
           RETURNING *;
         `, 
-        [id, brand, description, category, price]);
+        [brand, description, category, price, img]);
   
       return routine;
   
@@ -59,5 +59,23 @@ async function createProduct({id, brand, description, category, price}) {
         }
       }
     }
+
+    async function deleteProduct({id}){
+        try {
+            const { rows: [ product ] } = await client.query(`
+             DELETE FROM products
+             WHERE id=$1
+             RETURNING *;
+            `, id);
+    
+            console.log("deleted product:", product)
+        
+            return product;
+          } catch (error) {
+            return {
+              error: "Error deleting product!"
+            }
+          }
+        }
   
     module.exports(getAllProducts, createProduct)
