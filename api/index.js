@@ -45,19 +45,17 @@ router.use(async (req, res, next) => {
 
 
 
-
-
 // ROUTER: /api/users
 const usersRouter = require('./users');
 router.use('/users', usersRouter);
 
-// ROUTER: /api/activities
+// ROUTER: /api/products
 const productsRouter = require('./products');
-router.use('/activities', productsRouter);
+router.use('/products', productsRouter);
 
-// ROUTER: /api/routines
+// ROUTER: /api/cart
 const cartRouter = require('./cart');
-router.use('/routines', cartRouter);
+router.use('/cart', cartRouter);
 
 
 module.exports = router;
