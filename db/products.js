@@ -12,17 +12,17 @@ try {
   }
 }
 
-async function createProduct({id, name, description, category, price}) {
+async function createProduct({id, brand, description, category, price}) {
   
     try {
       const { rows: [routine] } = await client.query(
         `
-          INSERT INTO products (id, name, description, category, price)
+          INSERT INTO products (id, brand, description, category, price)
           VALUES ($1, $2, $3, $4, $5)
           ON CONFLICT (name) DO NOTHING
           RETURNING *;
         `, 
-        [id, name, description, category, price]);
+        [id, brand, description, category, price]);
   
       return routine;
   
@@ -49,6 +49,8 @@ async function createProduct({id, name, description, category, price}) {
           WHERE id=${ id }
           RETURNING *;
         `, Object.values(fields));
+
+        console.log("updated product:", product)
     
         return product;
       } catch (error) {
@@ -58,3 +60,4 @@ async function createProduct({id, name, description, category, price}) {
       }
     }
   
+    module.exports(getAllProducts, createProduct)
