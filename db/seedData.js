@@ -28,11 +28,11 @@ async function dropTables() {
       console.log("Starting to build tables...")
   
       await client.query(`
-        CREATE TABLE users (
+      CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
-        streetAddress varchar (255) NOT NULL,
+        "streetAddress" varchar (255) NOT NULL,
         city varchar (255) NOT NULL,
         state varchar (255) NOT NULL,
         zip varchar (255) NOT NULL,
@@ -41,18 +41,18 @@ async function dropTables() {
       );
         CREATE TABLE products (
         id SERIAL PRIMARY KEY,
-        name varchar(255) UNIQUE NOT NULL,
+        brand varchar(255) NOT NULL,
         description TEXT NOT NULL,
         category TEXT NOT NULL,
-        price varchar (255) NOT NULL
+        price varchar (255) NOT NULL,
+        "imageUrl" varchar (255) NOT NULL
       );
-        CREATE TABLE cartitem (
+        CREATE TABLE cart (
         id SERIAL PRIMARY KEY,
+        quantity INTEGER NOT NULL,
+        "userId" INTEGER REFERENCES users(id),
         "productId" INTEGER REFERENCES products(id),
-        "productName" varchar(255) REFERENCES products(name),
-        "productDescription" varchar(255) REFERENCES products(desc
-            ription),
-        "productPrice" varchar(255 REFERENCES products(price)
+        UNIQUE("productId", "userId")
       );
     `)
   
