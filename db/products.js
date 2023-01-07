@@ -19,7 +19,7 @@ async function createProduct({brand, description, category, price, img}) {
         `
           INSERT INTO products (brand, description, category, price, img)
           VALUES ($1, $2, $3, $4, $5)
-          ON CONFLICT (name) DO NOTHING
+          ON CONFLICT (brand) DO NOTHING
           RETURNING *;
         `, 
         [brand, description, category, price, img]);
