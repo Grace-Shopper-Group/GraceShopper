@@ -1,5 +1,6 @@
 
 const client = require("./client");
+const bcrypt = require('bcrypt');
 
 async function createUser({ username, password, streetAddress, city, state, zip, phone, email }) {
   try {
@@ -56,11 +57,35 @@ async function getAllUsers() {
   }
 }
 
+async function getUser({ username, password }) {
 
+
+   if (!username || !password){
+     return
+   }
+   try {
+     const user = await getUserByUsername(username)
+     const hashedPassword = user.password
+     const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+  
+     if (passwordsMatch) {
+ delete user.password;
+ return user
+ 
+     } else {
+       return null;
+     }
+ 
+    } catch (error) {
+     console.log ("Error in getUser")
+     throw error;
+   }
+ }
 
 module.exports = {
   createUser,
   getUserById,
   getUserByUsername,
-  getAllUsers
+  getAllUsers,
+  getUser
 }
