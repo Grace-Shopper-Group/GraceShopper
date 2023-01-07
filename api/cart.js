@@ -1,47 +1,41 @@
 const express = require('express');
-const { getProductById } = require('../db');
 const router = express.Router();
-const { updateCart, emptyCart, getRoutineActivityById } = require ('../db/routine_activities')
+const { updateCart, emptyCart, getCartById } = require ('../db/cart')
 const {requireUser} = require('./utils');
 
 
-router.patch('/:routineActivityId', requireUser, async (req, res, next) => {
+router.patch('/:cartId', requireUser, async (req, res, next) => {
   
    const user= req.user
-    const { routineActivityId } = req.params;
+    const { cartId } = req.params;
    
-    const { count, duration } = req.body;
+    const { quantity } = req.body;
 
     const updateFields = {};
     
-    if (count) {
-      updateFields.count = count;
+    if (quantity) {
+      updateFields.quantity = quantity;
     }
-  
-    if (duration) {
-      updateFields.duration = duration;
 
-    if (routineActivityId) {
-      updateFields.id = routineActivityId
+    if (cartId) {
+      updateFields.id = cartId
     }
-    }
+    
     
   try {
-     const routineActivity = await getRoutineActivityById(routineActivityId);
-   
-     const routine = await getRoutineById (routineActivity.routineId)
+     const cart = await getCartById(cartId);
     
-     if (!user || user.id !== routine.creatorId){
+     if (!user || user.id !== cart.userId){
       res.status(403)
         res.send({ 
           error: "Error",
           name: "Unathorized user error",
-          message: `User ${user.username} is not allowed to update In the evening`})
+          message: `User ${user.username} is not allowed to update this cart`})
      }else {
       
-      const updatedRoutineActivity = await updateRoutineActivity(updateFields);
+      const updatedCart = await updateCart(updateFields);
       
-        res.send( updatedRoutineActivity )
+        res.send( updatedCart )
     
       
       }} catch ({ name, message }) {
@@ -52,25 +46,24 @@ router.patch('/:routineActivityId', requireUser, async (req, res, next) => {
 
 
 // DELETE /api/routine_activities/:routineActivityId
-router.delete('/:routineActivityId', async (req, res, next) => {
+router.delete('/:cartId', async (req, res, next) => {
 const user = req.user
  
    try {
        
-       const routineActivity = await getRoutineActivityById(req.params.routineActivityId);
-      const routine = await getRoutineById(routineActivity.routineId)
+       const cart = await getCartById(req.params.cartId);
 
-      if (!user || user.id === routine.creatorId){
+      if (user.id === cart.userId){
       
-         const deletedActivity = await destroyRoutineActivity(routineActivity.id);
+         const emptiedCart = await emptyCart(cart.id);
        
-         res.send(deletedActivity);
+         res.send(emptiedCart);
       } else {
         res.status(403)
         res.send({ 
           error: "Error",
           name: "Unathorized user error",
-          message: `User ${user.username} is not allowed to delete In the afternoon`})
+          message: `User ${user.username} is not allowed to delete this cart`})
       }
    
      } catch ({name, message}){
