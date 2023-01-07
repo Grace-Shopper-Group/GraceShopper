@@ -22,6 +22,27 @@ async function addProductToCart({
     }
   }
 
+  async function getCartById(id){
+
+    // console.log ("KKKKKKKKKKK", id)
+     try{
+       const {rows: cart } = await client.query(`
+       SELECT * 
+       FROM cart
+       WHERE id = $1;
+      `, [id])
+     // console.log ("KKKKKKKKKKK", cart)
+       return cart[0]
+     }catch (error) {
+       console.log ("Error in getCartById function" + error)
+       throw error;
+     }
+     
+   
+   }
+
+
+
 
   async function updateCart ({...fields}) {
     console.log("db/cart/updateCart", fields)
@@ -80,7 +101,7 @@ async function addProductToCart({
 
   module.exports = {
     addProductToCart,
+    getCartById,
     updateCart,
-    emptyCart
-    
-  }
+    emptyCart,
+}
