@@ -78,4 +78,8 @@ async function createProduct({brand, description, category, price, img}) {
           }
         }
   
-    module.exports(getAllProducts, createProduct)
+    module.exports = { 
+        getAllProducts,
+        createProduct,
+        updateProduct,
+        deleteProduct }
