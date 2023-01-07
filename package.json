@@ -4,9 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon app.js",
-    "start": "node.js"
+    "start": "node app.js",
+    "seed:dev": "nodemon ./db/seed.js",
+    "seed": "node ./db/seed.js"
   },
   "repository": {
     "type": "git",
