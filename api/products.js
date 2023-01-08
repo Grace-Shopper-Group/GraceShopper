@@ -28,3 +28,5 @@ productsRouter.patch('/:productId', async (req, res) => {
 productsRouter.delete('/:productId', async (req, res) => {
   
 })
+
+module.exports = productsRouter;
