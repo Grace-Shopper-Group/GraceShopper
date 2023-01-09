@@ -46,8 +46,8 @@ router.use(async (req, res, next) => {
 
 
 // ROUTER: /api/users
-const usersRouter = require('./users');
-router.use('/users', usersRouter);
+// const usersRouter = require('./users');
+// router.use('/users', usersRouter);
 
 // ROUTER: /api/products
 const productsRouter = require('./products');
