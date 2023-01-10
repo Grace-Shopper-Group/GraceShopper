@@ -12,6 +12,24 @@ try {
   }
 }
 
+async function getProductById(productId){
+    try {
+  
+      const { rows: [product] } = await client.query(`
+      SELECT * FROM products
+      WHERE id = $1;
+      `, [productId]);
+  
+      return product
+    
+    } catch (error) {
+      console.log ("Error in getProductById")
+      throw error;
+  
+    }
+  }
+
+
 async function createProduct( { brand, description, category, price, imageUrl } ) {
  
     try {
@@ -78,6 +96,7 @@ async function createProduct( { brand, description, category, price, imageUrl } 
   
     module.exports = { 
         getAllProducts,
+        getProductById,
         createProduct,
         updateProduct,
         deleteProduct }
