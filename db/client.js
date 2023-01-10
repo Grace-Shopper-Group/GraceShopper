@@ -7,4 +7,4 @@ const client = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
 });
 
-module.exports = client;
+module.exports = {client};

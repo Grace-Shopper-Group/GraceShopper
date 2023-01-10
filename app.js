@@ -1,5 +1,5 @@
 const http = require("http")
-require("dotenv").config()
+//require("dotenv").config()
 const express = require("express");
 
 const app = express();
@@ -30,5 +30,6 @@ const PORT = 1337;
 const server = http.createServer(app)
 
 server.listen(PORT, () => {
-  console.log(`App listening in port ${PORT}`);
+  console.log(`Server is listening in port ${PORT}`);
 });
+
