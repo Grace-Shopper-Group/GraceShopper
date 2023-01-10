@@ -1,28 +1,34 @@
 const http = require("http")
+require("dotenv").config()
 const express = require("express");
+
 const app = express();
-const router = require('./api');
-const server = http.createServer(app)
-const { client } = require('./db');
 const morgan = require('morgan');
+const cors = require ('cors')
+const router = require('./api');
+
+
 app.use(morgan('dev'));
+app.use(cors());
+app.use('/api', router) 
 
-server.use(express.json())
-
-
-client.connect();
-
-server.use('/api', (req, res, next) => {
+router.use('/api', (req, res, next) => {
     console.log("A request was made to /api");
     next();
   });
 
-server.use('/api', router);
+router.get("/", (req, res) => res.send("Hello World!"));
 
-server.get("/", (req, res) => res.send("Hello World!"));
+router.use((error, req, res, next) => {
+    console.error(error);
+   res.status(404);
+    res.send("That page was not found.");
+    next()
+  });
 
 const PORT = 1337;
+const server = http.createServer(app)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App listening in port ${PORT}`);
 });
