@@ -12,6 +12,24 @@ try {
   }
 }
 
+async function getProductById(productId){
+    try {
+  
+      const { rows: [product] } = await client.query(`
+      SELECT * FROM products
+      WHERE id = $1;
+      `, [productId]);
+  
+      return product
+    
+    } catch (error) {
+      console.log ("Error in getProductById")
+      throw error;
+  
+    }
+  }
+
+
 async function createProduct( { brand, description, category, price, imageUrl } ) {
  
     try {
@@ -31,32 +49,36 @@ async function createProduct( { brand, description, category, price, imageUrl } 
     
   }
 
-  async function updateProduct({id, ...fields}){
-    const setString = Object.keys(fields).map(
-        (key, index) => `"${ key }"=$${ index + 1 }`
-      ).join(', ');
-    
-      if (setString.length === 0) {
-        return;
-      }
-    
-      try {
-        const { rows: [ product ] } = await client.query(`
-          UPDATE products
-          SET ${ setString }
-          WHERE id=${ id }
-          RETURNING *;
-        `, Object.values(fields));
+  async function updateProduct(productId, fields) {
 
-        console.log("updated product:", product)
+    const {brand, description, category, price, imageUrl} = fields
+
+    //console.log ("fields>>>>>>>>", fields)
     
-        return product;
-      } catch (error) {
-        return {
-          error: "Error updating product!"
-        }
-      }
+    
+    const setString = Object.keys(fields).map(
+      (key, index) => `"${ key }"=$${ index +1 }`
+  ).join(', ');
+  
+  if (setString.length === 0) {
+      return;
+  }
+  console.log (setString)
+  try {
+      const { rows: [product] } = await client.query(`
+      UPDATE products
+      SET ${ setString }
+      WHERE id = ${ productId }
+      RETURNING *;
+      `, Object.values(fields));
+  
+      //console.log (product)
+      return product;
+  } catch (error) {
+      console.log ("Error in updateProduct function")
+      throw error;
     }
+  }
 
     async function deleteProduct({id}){
         try {
@@ -78,6 +100,7 @@ async function createProduct( { brand, description, category, price, imageUrl } 
   
     module.exports = { 
         getAllProducts,
+        getProductById,
         createProduct,
         updateProduct,
         deleteProduct }
