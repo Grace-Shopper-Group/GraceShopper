@@ -1,32 +1,63 @@
-const express = require('express');
-const { nextTick } = require('process');
+const express = require("express");
+const { nextTick } = require("process");
 const productsRouter = express.Router();
-const { getAllProducts, createProduct } = require('../db')
+const { getAllProducts, createProduct, getUserByUsername } = require("../db");
 
-productsRouter.get('/', async (req, res, next) => {
-    const allProducts = await getAllProducts()
-        
-        if (allProducts) {
-            console.log('allProducts', allProducts)
-        }
-    res.send(allProducts)
-    next();
-})
+productsRouter.get("/", async (req, res, next) => {
+  const allProducts = await getAllProducts();
 
-productsRouter.post('/', async (req, res) => {
-    const { brand, description, category, price, img } = req.body
+  if (allProducts) {
+    console.log("allProducts", allProducts);
+  }
+  res.send(allProducts);
+  next();
+});
 
-    const newProduct = await createProduct(brand, description, category, price, img)
+productsRouter.post("/", async (req, res) => {
+  const user = req.user;
+  const { brand, description, category, price, img } = req.body;
 
-    res.send(newProduct)
-})
+  const validUser = await getUserByUsername(user.username);
 
-productsRouter.patch('/:productId', async (req, res) => {
-  
-})
+  if (validUser) {
+    try{
+    const newProduct = await createProduct(
+      brand,
+      description,
+      category,
+      price,
+      img
+    );
 
-productsRouter.delete('/:productId', async (req, res) => {
-  
-})
+    res.send(newProduct);
+
+    } catch ({name, message}) {
+        next({name, message})
+    }
+  } else {
+    res.status(401)
+    res.send({
+        error: "Error",
+        name: "Must be logged in error.",
+        message: "Must be logged in to perform this action"
+  })
+  }
+});
+
+productsRouter.patch("/:productId", async (req, res) => {
+    const user = req.user
+    const productId = req.params
+
+
+
+
+});
+
+productsRouter.delete("/:productId", async (req, res) => {
+    const user = req.user
+    const productId = req.params
+
+
+});
 
 module.exports = productsRouter;
