@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
+const cartRouter = express.Router();
 const { updateCart, emptyCart, getCartById } = require ('../db/cart')
 const {requireUser} = require('./utils');
 
 
-router.patch('/:cartId', requireUser, async (req, res, next) => {
+cartRouter.patch('/:cartId', requireUser, async (req, res, next) => {
   
    const user= req.user
     const { cartId } = req.params;
@@ -46,7 +46,7 @@ router.patch('/:cartId', requireUser, async (req, res, next) => {
 
 
 // DELETE /api/routine_activities/:routineActivityId
-router.delete('/:cartId', async (req, res, next) => {
+cartRouter.delete('/:cartId', async (req, res, next) => {
 const user = req.user
  
    try {
@@ -75,4 +75,4 @@ const user = req.user
 
 
 
-module.exports = router;
+module.exports = cartRouter;
