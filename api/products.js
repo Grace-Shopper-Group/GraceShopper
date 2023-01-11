@@ -105,9 +105,24 @@ productsRouter.patch("/:productId", async (req, res) => {
 });
 
 productsRouter.delete("/:productId", async (req, res) => {
-    const user = req.user
-    const productId = req.params
+    try {
+        const { productId } = req.params;
+        const { authorization } = req.headers;
 
+        if (!authorization) {
+            res.status(403)
+            res.send({
+              error: "Not Authorized",
+              message: `User is not allowed to delete product`,
+              name: "Auth Error"
+            })
+        } else {
+            const deletedProduct = await deleteProduct(productId);
+            res.send(deletedProduct);
+        }
+    } catch (error) {
+        next(error)
+    }
 
 });
 
