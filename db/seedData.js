@@ -139,7 +139,7 @@ async function createInitialProducts() {
         category: "athletic",
         price: "84.99",
         imageUrl:
-          "https://www.famousfootwea[]r.com/blob/product-images/20000/96/01/9/96019_pair_medium.jpg",
+          "https://www.famousfootwear.com/blob/product-images/20000/96/01/9/96019_pair_medium.jpg",
       },
       {
         brand: "Under Armour",
