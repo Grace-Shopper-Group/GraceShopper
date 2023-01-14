@@ -1,10 +1,34 @@
 const express = require('express');
-const cartRouter = express.Router();
-const { updateCart, emptyCart, getCartById } = require ('../db/cart')
+const router = express.Router();
+const { updateCart, emptyCart, getCartById, getCartByUserId } = require ('../db/cart')
 const {requireUser} = require('./utils');
 
 
-cartRouter.patch('/:cartId', requireUser, async (req, res, next) => {
+router.get('/:userId/cart', async (req,res,next) => {
+
+    try{
+    const { userId } = req.params;
+    
+    const cart = await getCartByUserId(userId)
+   
+    if (!cart){
+      
+      res.send({
+        error: "Error",
+        name: 'CartDoesNotExistsError',
+        message: `Cart for userId ${userId} not found`
+    }) 
+    }
+    else {
+        res.send (cart);
+    }
+    } catch ({ name, message})  {
+      next({ name, message });
+    }   
+    });
+    
+
+router.patch('/:cartId', requireUser, async (req, res, next) => {
   
    const user= req.user
     const { cartId } = req.params;
@@ -46,7 +70,7 @@ cartRouter.patch('/:cartId', requireUser, async (req, res, next) => {
 
 
 // DELETE /api/routine_activities/:routineActivityId
-cartRouter.delete('/:cartId', async (req, res, next) => {
+router.delete('/:cartId', async (req, res, next) => {
 const user = req.user
  
    try {
@@ -75,4 +99,4 @@ const user = req.user
 
 
 
-module.exports = cartRouter;
+module.exports = router;

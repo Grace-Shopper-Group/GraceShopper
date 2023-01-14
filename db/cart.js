@@ -41,6 +41,25 @@ async function addProductToCart({
    
    }
 
+   async function getCartByUserId(userId){
+
+    // console.log ("KKKKKKKKKKK", userId)
+     try{
+       const {rows: cart } = await client.query(`
+       SELECT * 
+       FROM cart
+       WHERE "userId" = $1;
+      `, [id])
+     // console.log ("KKKKKKKKKKK", cart)
+       return cart[0]
+     }catch (error) {
+       console.log ("Error in getCartById function" + error)
+       throw error;
+     }
+     
+   
+   }
+
 
 
 
@@ -102,6 +121,7 @@ async function addProductToCart({
   module.exports = {
     addProductToCart,
     getCartById,
+    getCartByUserId,
     updateCart,
     emptyCart,
 }
