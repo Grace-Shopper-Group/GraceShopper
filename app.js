@@ -10,7 +10,14 @@ const router = require('./api');
 
 
 app.use(morgan('dev'));
-app.use(cors({origin: '*'}));
+app.use(cors({
+origin: '*',
+methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+allowedHeaders: "Content-Type, Authorization",
+credentials: true
+}));
+app.options('*', cors());
+
 
 app.use('/api', router) 
 
