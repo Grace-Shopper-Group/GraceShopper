@@ -10,20 +10,21 @@ const router = require('./api');
 
 
 app.use(morgan('dev'));
-app.use(cors());
-// app.use(cors({
-// origin: '*',
-// methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-// allowedHeaders: "Content-Type, Authorization",
-// credentials: true
-// }));
-// app.options('*', cors());
+// app.use(cors());
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  next();
-});
+app.use(cors({
+origin: '*',
+methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+allowedHeaders: "Content-Type, Authorization",
+credentials: true
+}));
+app.options('*', cors());
+
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+//   next();
+// });
 
 
 app.use('/api', router) 
