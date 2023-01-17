@@ -12,16 +12,14 @@ const router = require('./api');
 app.use(morgan('dev'));
 // app.use(cors());
 
-app.use(cors({
-  origin: 'http://localhost:3000'
-}));
 
-// app.use(cors({
-// origin: '*',
-// methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-// allowedHeaders: "Content-Type, Authorization",
-// credentials: true
-// }));
+
+app.use(cors({
+origin: '*',
+methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+allowedHeaders: "Content-Type, Authorization",
+credentials: true
+}));
 app.options('*', cors());
 
 // app.use(function(req, res, next) {
@@ -38,7 +36,14 @@ router.use('/api', (req, res, next) => {
     next();
   });
 
-router.get("/", (req, res) => res.send("Hello World!"));
+
+router.get("/", (req, res) => {
+res.setHeader("Access-Control-Allow-Origin", "*")
+res.setHeader("Access-Control-Allow-Credentials", "true");
+res.setHeader("Access-Control-Max-Age", "1800");
+res.setHeader("Access-Control-Allow-Headers", "content-type");
+res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
+res.send("Hello World!")});
 
 router.use((error, req, res, next) => {
     console.error(error);
