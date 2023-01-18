@@ -12,15 +12,17 @@ const router = require('./api');
 app.use(morgan('dev'));
 // app.use(cors());
 
+app.use(cors());
+app.options(cors());
 
 
-app.use(cors({
-origin: '*',
-methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-allowedHeaders: "Content-Type, Authorization",
-credentials: true
-}));
-app.options('*', cors());
+// app.use(cors({
+// origin: '*',
+// methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+// allowedHeaders: "Content-Type, Authorization",
+// credentials: true
+// }));
+// app.options('*', cors());
 
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -32,22 +34,22 @@ app.options('*', cors());
 app.use('/api', router) 
 
 router.use('/api', (req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*")
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.setHeader("Access-Control-Max-Age", "1800");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
+  // res.setHeader("Access-Control-Allow-Origin", "*")
+  // res.setHeader("Access-Control-Allow-Credentials", "true");
+  // res.setHeader("Access-Control-Max-Age", "1800");
+  // res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  // res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
     console.log("A request was made to /api");
     next();
   });
 
 
 router.get("/", (req, res) => {
-res.setHeader("Access-Control-Allow-Origin", "*")
-res.setHeader("Access-Control-Allow-Credentials", "true");
-res.setHeader("Access-Control-Max-Age", "1800");
-res.setHeader("Access-Control-Allow-Headers", "content-type");
-res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
+// res.setHeader("Access-Control-Allow-Origin", "*")
+// res.setHeader("Access-Control-Allow-Credentials", "true");
+// res.setHeader("Access-Control-Max-Age", "1800");
+// res.setHeader("Access-Control-Allow-Headers", "content-type");
+// res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
 res.send("Hello World!")});
 
 router.use((error, req, res, next) => {
