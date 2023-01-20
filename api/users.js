@@ -25,7 +25,6 @@ router.post('/login', async (req, res, next) => {
       });
   }
   try{
-      console.log (username, password)
       const user = await getUser({username, password});
       console.log ("user", user)
     
@@ -44,7 +43,6 @@ router.post('/login', async (req, res, next) => {
           message: "you're logged in!",
           token: token
         }
-       console.log ("token", token)
         res.send( response );
         } else {
           res.status(401)
@@ -61,7 +59,6 @@ router.post('/login', async (req, res, next) => {
 });
 
 router.post('/register', async (req, res, next) => {
-  console.log ("req.body",req.body)
   const { username, password } = req.body;
   
   if (password.length < 8){
@@ -76,7 +73,6 @@ router.post('/register', async (req, res, next) => {
  try {
 
   const _user = await getUserByUsername(username);
-  console.log("_user", _user)
 
   if (_user && _user.username === username) {
     res.status(403)
@@ -87,11 +83,9 @@ router.post('/register', async (req, res, next) => {
   }
      
      const fields= {username: username, password: password}
-    console.log ("fields", fields)
       const user = await createUser(
         fields
       );
-     console.log ("aftercreateUser", user)
       const token = jwt.sign({
           "id": user.id,
           "username": username
