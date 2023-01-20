@@ -1,9 +1,9 @@
 const express = require("express");
 const { JWT_SECRET } = process.env
-const productsRouter = express.Router();
+const router = express.Router();
 const { getAllProducts, createProduct, getUserByUsername, updateProduct } = require("../db");
 
-productsRouter.get("/", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   const allProducts = await getAllProducts();
 
   if (allProducts) {
@@ -13,7 +13,7 @@ productsRouter.get("/", async (req, res, next) => {
   next();
 });
 
-productsRouter.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   const user = req.user;
   const { brand, description, category, price, img } = req.body;
 
@@ -44,7 +44,7 @@ productsRouter.post("/", async (req, res) => {
   }
 });
 
-productsRouter.patch("/:productId", async (req, res) => {
+router.patch("/:productId", async (req, res) => {
     
     const { brand, description, category, price, img } = req.body;
     
@@ -104,7 +104,7 @@ productsRouter.patch("/:productId", async (req, res) => {
 
 });
 
-productsRouter.delete("/:productId", async (req, res) => {
+router.delete("/:productId", async (req, res) => {
     try {
         const { productId } = req.params;
         const { authorization } = req.headers;
@@ -126,4 +126,4 @@ productsRouter.delete("/:productId", async (req, res) => {
 
 });
 
-module.exports = productsRouter;
+module.exports = router;

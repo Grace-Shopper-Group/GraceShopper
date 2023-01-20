@@ -44,12 +44,12 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
-        "streetAddress" varchar (255) NOT NULL,
-        city varchar (255) NOT NULL,
-        state varchar (255) NOT NULL,
-        zip varchar (255) NOT NULL,
-        phone varchar (255) NOT NULL,
-        email varchar (255) NOT NULL
+        "streetAddress" varchar (255),
+        city varchar (255),
+        state varchar (255),
+        zip varchar (255),
+        phone varchar (255),
+        email varchar (255)
       );
         CREATE TABLE products (
         id SERIAL PRIMARY KEY,

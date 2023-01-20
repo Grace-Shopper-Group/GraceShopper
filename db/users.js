@@ -2,16 +2,21 @@
 const client = require("./client");
 const bcrypt = require('bcrypt');
 
-async function createUser({ username, password, streetAddress, city, state, zip, phone, email }) {
+async function createUser({ username, password}) {
+  const SALT_COUNT = 10;
+  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+console.log ("hashedPassword", hashedPassword)
+console.log (username, password)
   try {
-    const { rows } = await client.query(`
-      INSERT INTO users(username, password, "streetAddress", city, state, zip, phone, email) 
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8) 
+    const { rows: [user] } = await client.query(`
+      INSERT INTO users(username, password) 
+      VALUES($1, $2) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, password, streetAddress, city, state, zip, phone, email]);
+    `, [username, hashedPassword]);
 
-    return rows;
+    console.log ("rows,", user)
+    return user;
   } catch (error) {
     throw error;
   }
@@ -32,13 +37,15 @@ async function getUserById(userId) {
 
 
 async function getUserByUsername(username) {
+  console.log ("getUserByUsername1", username)
   try {
-    const { rows: [ user ] } = await client.query(`
+    const { rows: user } = await client.query(`
       SELECT *
       FROM users
       WHERE username=$1
     `,[username]);
-    return user;
+    console.log ("aftersqluser, user",user)
+    return user[0];
   } catch (error) {
     throw error;
   }
@@ -57,22 +64,26 @@ async function getAllUsers() {
   }
 }
 
-async function getUser({ username, password }) {
-
+async function getUser({username, password}) {
+ console.log ("getUser1 username, password", username, password)
 
    if (!username || !password){
      return
    }
    try {
+     console.log ("getUser2 username, password2", username, password)
      const user = await getUserByUsername(username)
+     console.log ("getUserbyUsername2", user)
+     if (user){
      const hashedPassword = user.password
+    
      const passwordsMatch = await bcrypt.compare(password, hashedPassword);
-  
      if (passwordsMatch) {
- delete user.password;
- return user
- 
-     } else {
+      delete user.password;
+      console.log("getUserbyUsernaem3", user)
+      return user
+     }
+    } else {
        return null;
      }
  
