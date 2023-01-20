@@ -2,16 +2,20 @@
 const client = require("./client");
 const bcrypt = require('bcrypt');
 
-async function createUser({ username, password, streetAddress, city, state, zip, phone, email }) {
+async function createUser({ username, password, streetAddress, city, state, zip, phone, email}) {
+  const SALT_COUNT = 10;
+  const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+  
   try {
-    const { rows } = await client.query(`
+    const { rows: [user] } = await client.query(`
       INSERT INTO users(username, password, "streetAddress", city, state, zip, phone, email) 
       VALUES($1, $2, $3, $4, $5, $6, $7, $8) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, password, streetAddress, city, state, zip, phone, email]);
+    `, [username, hashedPassword, streetAddress, city, state, zip, phone, email]);
 
-    return rows;
+    console.log ("rows,", user)
+    return user;
   } catch (error) {
     throw error;
   }
@@ -33,12 +37,12 @@ async function getUserById(userId) {
 
 async function getUserByUsername(username) {
   try {
-    const { rows: [ user ] } = await client.query(`
+    const { rows: user } = await client.query(`
       SELECT *
       FROM users
       WHERE username=$1
     `,[username]);
-    return user;
+    return user[0];
   } catch (error) {
     throw error;
   }
@@ -57,22 +61,25 @@ async function getAllUsers() {
   }
 }
 
-async function getUser({ username, password }) {
-
+async function getUser({username, password}) {
+ console.log ("getUser1 username, password", username, password)
 
    if (!username || !password){
      return
    }
    try {
      const user = await getUserByUsername(username)
+    
+     if (user){
      const hashedPassword = user.password
+    
      const passwordsMatch = await bcrypt.compare(password, hashedPassword);
-  
      if (passwordsMatch) {
- delete user.password;
- return user
- 
-     } else {
+      delete user.password;
+     
+      return user
+     }
+    } else {
        return null;
      }
  

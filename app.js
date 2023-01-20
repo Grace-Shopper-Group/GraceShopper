@@ -1,65 +1,40 @@
 const http = require("http")
-//require("dotenv").config()
+require("dotenv").config()
 const express = require("express");
 
 const app = express();
 const morgan = require('morgan');
 const cors = require ('cors')
 
-const router = require('./api');
-
-
+app.use(express.json());
 app.use(morgan('dev'));
-// app.use(cors());
 
 app.use(cors());
 app.options(cors());
 
-
-// app.use(cors({
-// origin: '*',
-// methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-// allowedHeaders: "Content-Type, Authorization",
-// credentials: true
-// }));
-// app.options('*', cors());
-
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-//   next();
-// });
-
+const router = require('./api');
 
 app.use('/api', router) 
 
-router.use('/api', (req, res, next) => {
-  // res.setHeader("Access-Control-Allow-Origin", "*")
-  // res.setHeader("Access-Control-Allow-Credentials", "true");
-  // res.setHeader("Access-Control-Max-Age", "1800");
-  // res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  // res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
+router.use((req, res, next) => {
+ 
     console.log("A request was made to /api");
     next();
   });
 
 
 router.get("/", (req, res) => {
-// res.setHeader("Access-Control-Allow-Origin", "*")
-// res.setHeader("Access-Control-Allow-Credentials", "true");
-// res.setHeader("Access-Control-Max-Age", "1800");
-// res.setHeader("Access-Control-Allow-Headers", "content-type");
-// res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
 res.send("Hello World!")});
 
-router.use((error, req, res, next) => {
-    console.error(error);
-   res.status(404);
-    res.send("That page was not found.");
-    next()
-  });
+// router.use((error, req, res, next) => {
+//     console.error(error);
+//    res.status(404);
+//     res.send("That page was not found.");
+//     next()
+//   });
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 1337
+// const PORT = 3001
 const server = http.createServer(app)
 
 server.listen(PORT, () => {

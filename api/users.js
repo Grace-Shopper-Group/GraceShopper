@@ -1,16 +1,19 @@
 const express = require('express');
 
-const usersRouter = express.Router();
+const router = express.Router();
+
+
 const {getUserByUsername, createUser, getUserById, getUser } = require('../db/users');
 
 const jwt = require('jsonwebtoken');
 const  {JWT_SECRET}= process.env;
 
+
 const {requireUser}= require('./utils');
 
 
 
-usersRouter.post('/login', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
 
   
@@ -22,10 +25,7 @@ usersRouter.post('/login', async (req, res, next) => {
       });
   }
   try{
-      
       const user = await getUser({username, password});
-      console.log (user)
-    
      
       if (user) {
           const token = jwt.sign({
@@ -41,7 +41,6 @@ usersRouter.post('/login', async (req, res, next) => {
           message: "you're logged in!",
           token: token
         }
-       
         res.send( response );
         } else {
           res.status(401)
@@ -57,7 +56,7 @@ usersRouter.post('/login', async (req, res, next) => {
   res.end();
 });
 
-usersRouter.post('/register', async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   const { username, password } = req.body;
   
   if (password.length < 8){
@@ -72,7 +71,6 @@ usersRouter.post('/register', async (req, res, next) => {
  try {
 
   const _user = await getUserByUsername(username);
-  console.log(_user)
 
   if (_user && _user.username === username) {
     res.status(403)
@@ -83,18 +81,16 @@ usersRouter.post('/register', async (req, res, next) => {
   }
      
      const fields= {username: username, password: password}
-
       const user = await createUser(
         fields
       );
-     console.log (user)
       const token = jwt.sign({
           "id": user.id,
           "username": username
       }, process.env.JWT_SECRET, {
           expiresIn: '2w'
       });
-        
+        console.log (token)
           const response = { "user": user, 
           "message": "you're signed up!", "token": token}
        
@@ -107,7 +103,7 @@ usersRouter.post('/register', async (req, res, next) => {
 });
 
 
-usersRouter.get('/:username/cart', requireUser, async (req, res, next) => {
+router.get('/:username/cart', requireUser, async (req, res, next) => {
 
   const { userId } = req.params;
   
@@ -123,4 +119,4 @@ usersRouter.get('/:username/cart', requireUser, async (req, res, next) => {
   });
 
 
-  module.exports = usersRouter;
+  module.exports = router;
