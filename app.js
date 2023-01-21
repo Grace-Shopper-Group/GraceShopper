@@ -9,8 +9,13 @@ const cors = require ('cors')
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use(cors());
-app.options(cors());
+app.use(cors({
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+}));
+// app.options(cors());
 
 const router = require('./api');
 

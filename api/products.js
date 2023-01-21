@@ -1,5 +1,6 @@
 const express = require("express");
 const { JWT_SECRET } = process.env
+const jwt = require("jsonwebtoken")
 const router = express.Router();
 const { getAllProducts, createProduct, getUserByUsername, updateProduct } = require("../db");
 
@@ -44,7 +45,7 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.patch("/:productId", async (req, res) => {
+router.patch("/:productId", async (req, res, next) => {
     
     const { brand, description, category, price, img } = req.body;
     
@@ -58,9 +59,9 @@ router.patch("/:productId", async (req, res) => {
 
     if (price){updateData.price = price};
     
-    if (img){updateData.img = img};
+    if (img){updateData.imageUrl = img};
 
-    const prefix = 'Bearer'
+    const prefix = 'Bearer '
     const auth = req.header('Authorization')
     
     if (!auth){
@@ -104,7 +105,7 @@ router.patch("/:productId", async (req, res) => {
 
 });
 
-router.delete("/:productId", async (req, res) => {
+router.delete("/:productId", async (req, res, next) => {
     try {
         const { productId } = req.params;
         const { authorization } = req.headers;
