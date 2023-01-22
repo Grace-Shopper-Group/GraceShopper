@@ -15,13 +15,11 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const user = req.user;
+
   const { brand, description, category, price, img } = req.body;
 
-  const validUser = await getUserByUsername(user.username);
-
-  if (validUser) {
     try{
+
     const newProduct = await createProduct(
       brand,
       description,
@@ -35,14 +33,7 @@ router.post("/", async (req, res, next) => {
     } catch ({name, message}) {
         next({name, message})
     }
-  } else {
-    res.status(401)
-    res.send({
-        error: "Error",
-        name: "Must be logged in error.",
-        message: "Must be logged in to perform this action"
-  })
-  }
+
 });
 
 router.patch("/:productId", async (req, res, next) => {
@@ -60,7 +51,7 @@ router.patch("/:productId", async (req, res, next) => {
     if (price){updateData.price = price};
     
     if (img){updateData.imageUrl = img};
-    
+
     try {
 
         const changedProduct = await updateProduct(req.params.productId, updateData)
