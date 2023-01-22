@@ -2,7 +2,7 @@ const express = require("express");
 const { JWT_SECRET } = process.env
 const jwt = require("jsonwebtoken")
 const router = express.Router();
-const { getAllProducts, createProduct, getUserByUsername, updateProduct } = require("../db");
+const { getAllProducts, createProduct, getUserByUsername, updateProduct, deleteProduct } = require("../db");
 
 router.get("/", async (req, res, next) => {
   const allProducts = await getAllProducts();
@@ -61,22 +61,7 @@ router.patch("/:productId", async (req, res, next) => {
     
     if (img){updateData.imageUrl = img};
 
-    const prefix = 'Bearer '
-    const auth = req.header('Authorization')
-    
-    if (!auth){
-        res.status(401)
-        res.send({
-            error: "Error",
-            name: "Token Error",
-            message: "You must be logged in to perform this action"
-        })}
-
-    const token = auth.slice(prefix.length);
-
-    const tokenVerified = jwt.verify(token, JWT_SECRET)
-
-        console.log("token id:", tokenVerified.id)
+    v
 
     try {
 
@@ -106,21 +91,12 @@ router.patch("/:productId", async (req, res, next) => {
 });
 
 router.delete("/:productId", async (req, res, next) => {
+    const { productId } = req.params;
+    
     try {
-        const { productId } = req.params;
-        const { authorization } = req.headers;
-
-        if (!authorization) {
-            res.status(403)
-            res.send({
-              error: "Not Authorized",
-              message: `User is not allowed to delete product`,
-              name: "Auth Error"
-            })
-        } else {
-            const deletedProduct = await deleteProduct(productId);
-            res.send(deletedProduct);
-        }
+    const deletedProduct = await deleteProduct(productId);
+        res.send(deletedProduct);
+        
     } catch (error) {
         next(error)
     }

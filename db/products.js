@@ -78,17 +78,14 @@ async function createProduct( { brand, description, category, price, imageUrl } 
     }
   }
 
-    async function deleteProduct({id}){
+    async function deleteProduct(id){
         try {
-            const { rows: [ product ] } = await client.query(`
+            const { rows } = await client.query(`
              DELETE FROM products
-             WHERE id=$1
-             RETURNING *;
-            `, id);
-    
-            console.log("deleted product:", product)
+             WHERE id=$1;
+            `, [id]);
         
-            return product;
+            return rows;
           } catch (error) {
             return {
               error: "Error deleting product!"
