@@ -60,9 +60,7 @@ router.patch("/:productId", async (req, res, next) => {
     if (price){updateData.price = price};
     
     if (img){updateData.imageUrl = img};
-
-    v
-
+    
     try {
 
         const changedProduct = await updateProduct(req.params.productId, updateData)
@@ -92,7 +90,7 @@ router.patch("/:productId", async (req, res, next) => {
 
 router.delete("/:productId", async (req, res, next) => {
     const { productId } = req.params;
-    
+
     try {
     const deletedProduct = await deleteProduct(productId);
         res.send(deletedProduct);
