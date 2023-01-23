@@ -1,7 +1,8 @@
 const express = require("express");
 const { JWT_SECRET } = process.env
+const jwt = require("jsonwebtoken")
 const router = express.Router();
-const { getAllProducts, createProduct, getUserByUsername, updateProduct } = require("../db");
+const { getAllProducts, createProduct, getUserByUsername, updateProduct, deleteProduct } = require("../db");
 
 router.get("/", async (req, res, next) => {
   const allProducts = await getAllProducts();
@@ -14,13 +15,11 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-  const user = req.user;
+
   const { brand, description, category, price, img } = req.body;
 
-  const validUser = await getUserByUsername(user.username);
-
-  if (validUser) {
     try{
+
     const newProduct = await createProduct(
       brand,
       description,
@@ -34,17 +33,10 @@ router.post("/", async (req, res, next) => {
     } catch ({name, message}) {
         next({name, message})
     }
-  } else {
-    res.status(401)
-    res.send({
-        error: "Error",
-        name: "Must be logged in error.",
-        message: "Must be logged in to perform this action"
-  })
-  }
+
 });
 
-router.patch("/:productId", async (req, res) => {
+router.patch("/:productId", async (req, res, next) => {
     
     const { brand, description, category, price, img } = req.body;
     
@@ -58,24 +50,7 @@ router.patch("/:productId", async (req, res) => {
 
     if (price){updateData.price = price};
     
-    if (img){updateData.img = img};
-
-    const prefix = 'Bearer'
-    const auth = req.header('Authorization')
-    
-    if (!auth){
-        res.status(401)
-        res.send({
-            error: "Error",
-            name: "Token Error",
-            message: "You must be logged in to perform this action"
-        })}
-
-    const token = auth.slice(prefix.length);
-
-    const tokenVerified = jwt.verify(token, JWT_SECRET)
-
-        console.log("token id:", tokenVerified.id)
+    if (img){updateData.imageUrl = img};
 
     try {
 
@@ -104,22 +79,13 @@ router.patch("/:productId", async (req, res) => {
 
 });
 
-router.delete("/:productId", async (req, res) => {
-    try {
-        const { productId } = req.params;
-        const { authorization } = req.headers;
+router.delete("/:productId", async (req, res, next) => {
+    const { productId } = req.params;
 
-        if (!authorization) {
-            res.status(403)
-            res.send({
-              error: "Not Authorized",
-              message: `User is not allowed to delete product`,
-              name: "Auth Error"
-            })
-        } else {
-            const deletedProduct = await deleteProduct(productId);
-            res.send(deletedProduct);
-        }
+    try {
+    const deletedProduct = await deleteProduct(productId);
+        res.send(deletedProduct);
+        
     } catch (error) {
         next(error)
     }

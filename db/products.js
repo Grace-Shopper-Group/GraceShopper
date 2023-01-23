@@ -30,7 +30,7 @@ async function getProductById(productId){
   }
 
 
-async function createProduct( { brand, description, category, price, imageUrl } ) {
+async function createProduct( brand, description, category, price, imageUrl ) {
  
     try {
       const { rows } = await client.query(`
@@ -53,26 +53,24 @@ async function createProduct( { brand, description, category, price, imageUrl } 
 
     const {brand, description, category, price, imageUrl} = fields
 
-    //console.log ("fields>>>>>>>>", fields)
+    console.log ("fields>>>>>>>>", fields)
     
-    
-    const setString = Object.keys(fields).map(
-      (key, index) => `"${ key }"=$${ index +1 }`
-  ).join(', ');
-  
-  if (setString.length === 0) {
+    const setString = Object.keys(fields).map((key, index) => `"${ key }"=$${ index + 1}`).join(', ');
+
+    if (setString.length === 0) {
       return;
-  }
+    }
+  
   console.log (setString)
   try {
       const { rows: [product] } = await client.query(`
       UPDATE products
-      SET ${ setString }
-      WHERE id = ${ productId }
+      SET ${setString}
+      WHERE id = ${productId}
       RETURNING *;
-      `, Object.values(fields));
+  `, Object.values(fields));
   
-      //console.log (product)
+      console.log (product)
       return product;
   } catch (error) {
       console.log ("Error in updateProduct function")
@@ -80,17 +78,14 @@ async function createProduct( { brand, description, category, price, imageUrl } 
     }
   }
 
-    async function deleteProduct({id}){
+    async function deleteProduct(id){
         try {
-            const { rows: [ product ] } = await client.query(`
+            const { rows } = await client.query(`
              DELETE FROM products
-             WHERE id=$1
-             RETURNING *;
-            `, id);
-    
-            console.log("deleted product:", product)
+             WHERE id=$1;
+            `, [id]);
         
-            return product;
+            return rows;
           } catch (error) {
             return {
               error: "Error deleting product!"
