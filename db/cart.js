@@ -6,7 +6,7 @@ async function addProductToCart({
     quantity
   }) {
   
-  //console.log ("INPUTS to addActivityToROUTINE", routineId, activityId, count, duration)
+  console.log ("INPUTS to addProductToCart", userId, productId, quantity)
     try {
       const { rows: cartitem } = await client.query(`
       INSERT INTO cart ("userId", "productId", quantity) 
@@ -14,7 +14,8 @@ async function addProductToCart({
       RETURNING *;
       `, [userId, productId, quantity]);
       
-    
+     
+      console.log ("cartitem", cartitem)
       return cartitem[0]
   }catch (error) {
       console.log ("Error in addProductToCart function" + error)
@@ -49,11 +50,31 @@ async function addProductToCart({
        SELECT * 
        FROM cart
        WHERE "userId" = $1;
-      `, [id])
+      `, [userId])
      // console.log ("KKKKKKKKKKK", cart)
        return cart[0]
      }catch (error) {
-       console.log ("Error in getCartById function" + error)
+       console.log ("Error in getCartByUserId function" + error)
+       throw error;
+     }
+     
+   
+   }
+
+   async function getCartByProductId(productId, user){
+
+     console.log ("KKKKKKKKKK productId and User.id ", productId, user.id)
+     try{
+       const {rows: cart} = await client.query(`
+       SELECT * 
+       FROM cart
+       WHERE "productId" = $1 
+       AND "userId" = $2;
+      `, [productId, user.id])
+     console.log ("KKKKKKKKKKK", cart[0])
+       return cart[0]
+     }catch (error) {
+       console.log ("Error in getCartByProductId function" + error)
        throw error;
      }
      
@@ -62,26 +83,25 @@ async function addProductToCart({
 
 
 
-
-  async function updateCart ({...fields}) {
+  async function updateCart(fields) {
     console.log("db/cart/updateCart", fields)
-    //    const {cartId, quantity} = fields
+       const {id, quantity} = fields
 
-    //console.log(cartId, quantity)
+    console.log("cartId and quantity", id, quantity)
         
-    const setString = Object.keys(fields).map(
-          (key, index) => `"${ key }"=$${ index + 1 }`
-      ).join(', ');
-        console.log (setString)
+    // const setString = Object.keys(fields).map(
+    //       (key, index) => `"${ key }"=$${ index + 1 }`
+    //   ).join(', ');
+    //     console.log (setString)
        try {
             const {rows: updatedCart} = await client.query(`
             UPDATE cart
-            SET ${setString}
-            WHERE id = ${ cartId }
+            SET quantity = $1
+            WHERE id = ${ id }
             RETURNING *;
             `, [ quantity ]);
     
-         //  console.log (">>>>>>",updatedCart[0])
+          console.log (">>>>>>",updatedCart[0])
         
        return updatedCart[0]
     
@@ -122,6 +142,7 @@ async function addProductToCart({
     addProductToCart,
     getCartById,
     getCartByUserId,
+    getCartByProductId,
     updateCart,
     emptyCart,
 }
