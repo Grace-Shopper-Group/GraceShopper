@@ -30,7 +30,7 @@ async function getProductById(productId){
   }
 
 
-async function createProduct( brand, description, category, price, imageUrl ) {
+async function createProduct( {brand, description, category, price, imageUrl} ) {
  
     try {
       const { rows } = await client.query(`
