@@ -21,6 +21,7 @@ async function dropTables() {
     console.log("Starting to drop tables...");
 
     await client.query(`
+      DROP TABLE IF EXISTS orders CASCADE;
       DROP TABLE IF EXISTS cart CASCADE;
       DROP TABLE IF EXISTS products CASCADE;
       DROP TABLE IF EXISTS users;
@@ -65,6 +66,20 @@ async function createTables() {
         "userId" INTEGER REFERENCES users(id),
         "productId" INTEGER REFERENCES products(id),
         UNIQUE("productId", "userId")
+      );
+        CREATE TABLE orders (
+        id SERIAL PRIMARY KEY,
+        "userId" INTEGER REFERENCES users(id),
+        "cartId" INTEGER REFERENCES cart(id),
+        UNIQUE("cartId", "userId")
+      );
+        CREATE TABLE orderItems (
+        id SERIAL PRIMARY KEY,
+        "orderId" INTEGER REFERENCES orders(id),
+        "productId" INTEGER REFERENCES products(id),
+        quantity INTEGER NOT NULL,
+        price varchar (255),
+        UNIQUE("orderId", "productId")
       );
     `);
 
