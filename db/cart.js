@@ -52,7 +52,7 @@ async function addProductToCart({
        WHERE "userId" = $1;
       `, [userId])
      // console.log ("KKKKKKKKKKK", cart)
-       return cart[0]
+       return cart
      }catch (error) {
        console.log ("Error in getCartByUserId function" + error)
        throw error;

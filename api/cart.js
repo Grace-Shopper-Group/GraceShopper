@@ -10,6 +10,8 @@ router.get('/:userId/cart', async (req,res,next) => {
     const { userId } = req.params;
     
     const cart = await getCartByUserId(userId)
+
+    console.log ("api CartbyUserId", cart)
    
     if (!cart){
       
