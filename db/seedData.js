@@ -68,19 +68,15 @@ async function createTables() {
         UNIQUE("productId", "userId")
       );
         CREATE TABLE orders (
-        id SERIAL PRIMARY KEY,
-        "userId" INTEGER REFERENCES users(id),
-        "cartId" INTEGER REFERENCES cart(id),
-        UNIQUE("cartId", "userId")
-      );
-        CREATE TABLE orderItems (
-        id SERIAL PRIMARY KEY,
-        "orderId" INTEGER REFERENCES orders(id),
-        "productId" INTEGER REFERENCES products(id),
+        "orderId" SERIAL PRIMARY KEY,
         quantity INTEGER NOT NULL,
-        price varchar (255),
-        UNIQUE("orderId", "productId")
+        "userId" INTEGER REFERENCES users(id),
+        "productId" INTEGER REFERENCES products(id),
+        total INTEGER NOT NULL,
+        "orderDate" varchar (255),
+        UNIQUE("orderId", "userId")
       );
+       
     `);
 
     console.log("Finished building tables!");
