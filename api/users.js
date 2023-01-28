@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 
-const {getUserByUsername, createUser, getUserById, getUser } = require('../db/users');
+const {getUserByUsername, createUser, getUserById, getUser, updateUser } = require('../db/users');
 
 const jwt = require('jsonwebtoken');
 const  {JWT_SECRET}= process.env;
@@ -100,6 +100,55 @@ router.post('/register', async (req, res, next) => {
       console.log ("Error in router.post /registration");
       next();
   }
+});
+
+router.patch("/:userId", async (req, res, next) => {
+    
+  const { first_name, last_name, streetAddress, city, state, zip, phone, email } = req.body;
+  
+  const updateData = { id: req.params.userId };
+  
+  if (first_name){updateData.first_name = first_name};
+
+  if (last_name){updateData.last_name = last_name};
+
+  if (streetAddress){updateData.streetAddress = streetAddress};
+
+  if (city){updateData.city = city};
+  
+  if (state){updateData.state = state};
+
+  if (zip){updateData.zip = zip};
+
+  if (phone){updateData.phone = phone};
+
+  if (email){updateData.email = email};
+
+  try {
+
+      const updatedUser = await updateUser(req.params.userId, updateData)
+
+      if (!updatedUser) {
+          res.send({
+              name: "Error",
+              error: "Could not update the user",
+              message: `User ${updateData.id} not found`
+          });
+      } else if (updatedUser.error) {
+          res.send({
+              name: "Error",
+              error: updatedUser.error,
+              message: `An user with name ${req.body.first_name} already exists`
+          })
+      } else {
+          res.send(updatedUser)
+      }
+
+  } catch (error){
+      next(error)
+  }
+
+
 });
 
 

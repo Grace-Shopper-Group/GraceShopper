@@ -46,6 +46,8 @@ async function createTables() {
         username varchar(255) UNIQUE NOT NULL,
         password varchar(255) NOT NULL,
         "streetAddress" varchar (255),
+        first_name varchar (255),
+        last_name varchar (255,)
         city varchar (255),
         state varchar (255),
         zip varchar (255),
