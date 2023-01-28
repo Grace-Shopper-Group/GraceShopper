@@ -1,18 +1,18 @@
 
 const client = require("./client");
 const bcrypt = require('bcrypt');
-
-async function createUser({ username, password, streetAddress, city, state, zip, phone, email}) {
+//, first_name, last_name, streetAddress, city, state, zip, phone, email
+async function createUser({ username, password}) {
   const SALT_COUNT = 10;
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
-  
+  console.log ("username password createUser", username, hashedPassword)
   try {
     const { rows: [user] } = await client.query(`
-      INSERT INTO users(username, password, "streetAddress", city, state, zip, phone, email) 
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8) 
+      INSERT INTO users(username, password) 
+      VALUES($1, $2) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, hashedPassword, streetAddress, city, state, zip, phone, email]);
+    `, [username, hashedPassword]);
 
     console.log ("rows,", user)
     return user;
@@ -89,10 +89,42 @@ async function getUser({username, password}) {
    }
  }
 
+ async function updateUser (userId, fields) {
+
+  const {iscustomer, firstname, lastname, streetAddress, city, state, zip, phone, email} = fields
+
+  console.log ("fields>>>>>>>>", fields)
+  
+  const setString = Object.keys(fields).map((key, index) => `"${ key }"=$${ index + 1}`).join(', ');
+
+  if (setString.length === 0) {
+    return;
+  }
+
+console.log (setString)
+try {
+    const { rows: [user] } = await client.query(`
+    UPDATE users
+    SET ${setString}
+    WHERE id = ${userId}
+    RETURNING *;
+`, Object.values(fields));
+
+    console.log ("user", user)
+    return user;
+} catch (error) {
+    console.log ("Error in updateUser function")
+    throw error;
+  }
+}
+
+
+
 module.exports = {
   createUser,
   getUserById,
   getUserByUsername,
   getAllUsers,
+  updateUser,
   getUser
 }
