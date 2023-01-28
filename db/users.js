@@ -1,18 +1,18 @@
 
 const client = require("./client");
 const bcrypt = require('bcrypt');
-
-async function createUser({ username, password, first_name, last_name, streetAddress, city, state, zip, phone, email}) {
+//, first_name, last_name, streetAddress, city, state, zip, phone, email
+async function createUser({ username, password}) {
   const SALT_COUNT = 10;
   const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
-  
+  console.log ("username password createUser", username, hashedPassword)
   try {
     const { rows: [user] } = await client.query(`
-      INSERT INTO users(username, password, first_name, last_name, "streetAddress", city, state, zip, phone, email) 
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+      INSERT INTO users(username, password) 
+      VALUES($1, $2) 
       ON CONFLICT (username) DO NOTHING 
       RETURNING *;
-    `, [username, hashedPassword, first_name, last_name, streetAddress, city, state, zip, phone, email]);
+    `, [username, hashedPassword]);
 
     console.log ("rows,", user)
     return user;
@@ -91,7 +91,7 @@ async function getUser({username, password}) {
 
  async function updateUser (userId, fields) {
 
-  const {first_name, last_name, streetAddress, city, state, zip, phone, email} = fields
+  const {iscustomer, firstname, lastname, streetAddress, city, state, zip, phone, email} = fields
 
   console.log ("fields>>>>>>>>", fields)
   
@@ -110,7 +110,7 @@ try {
     RETURNING *;
 `, Object.values(fields));
 
-    console.log (user)
+    console.log ("user", user)
     return user;
 } catch (error) {
     console.log ("Error in updateUser function")

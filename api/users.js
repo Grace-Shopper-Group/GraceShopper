@@ -104,13 +104,19 @@ router.post('/register', async (req, res, next) => {
 
 router.patch("/:userId", async (req, res, next) => {
     
-  const { first_name, last_name, streetAddress, city, state, zip, phone, email } = req.body;
+  const { iscustomer, firstname, lastname, streetAddress, city, state, zip, phone, email } = req.body;
   
-  const updateData = { id: req.params.userId };
-  
-  if (first_name){updateData.first_name = first_name};
+  const updateData = {};
 
-  if (last_name){updateData.last_name = last_name};
+  if (iscustomer===true){
+    updateData.iscustomer = true
+  }else {
+    updateData.iscustomer = false
+  };
+  
+  if (firstname){updateData.firstname = firstname};
+
+  if (lastname){updateData.lastname = lastname};
 
   if (streetAddress){updateData.streetAddress = streetAddress};
 
