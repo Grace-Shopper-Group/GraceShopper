@@ -16,16 +16,17 @@ router.get("/", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
 
-  const { brand, description, category, price, img } = req.body;
+  const { brand, description, category, price, imageUrl } = req.body;
 
     try{
 
-    const newProduct = await createProduct(
+    const newProduct = await createProduct({
       brand,
       description,
       category,
       price,
-      img
+      imageUrl
+    }
     );
 
     res.send(newProduct);
